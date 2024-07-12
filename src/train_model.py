@@ -6,16 +6,25 @@ from stability_predictor import StabilityPredictor
 import torch.nn as nn
 import torch.optim as optim
 
+
 class StabilityDataset(Dataset):
     def __init__(self, feature_file, label_file):
-        self.features = pd.read_csv(feature_file).values
-        self.labels = pd.read_csv(label_file)['stability_score'].values.reshape(-1, 1)
+        self.features = pd.read_csv(feature_file).drop(columns=['residue_id']).values.astype(np.float32)
+        self.labels = pd.read_csv(label_file)['stability_score'].values.astype(np.float32).reshape(-1, 1)
+
+        # Ensure the number of features matches the number of labels
+        assert len(self.features) == len(self.labels), "Mismatch between number of features and labels"
+
+        print(f"Number of features: {len(self.features)}")
+        print(f"Number of labels: {len(self.labels)}")
 
     def __len__(self):
         return len(self.features)
 
     def __getitem__(self, idx):
-        return torch.tensor(self.features[idx], dtype=torch.float32), torch.tensor(self.labels[idx], dtype=torch.float32)
+        return torch.tensor(self.features[idx], dtype=torch.float32), torch.tensor(self.labels[idx],
+                                                                                   dtype=torch.float32)
+
 
 def train_model(feature_file, label_file, model_path):
     dataset = StabilityDataset(feature_file, label_file)
@@ -39,3 +48,7 @@ def train_model(feature_file, label_file, model_path):
             print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
 
     torch.save(model.state_dict(), model_path)
+
+
+
+

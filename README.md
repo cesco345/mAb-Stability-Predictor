@@ -31,7 +31,7 @@
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/mAb-Stability-Predictor.git
+    git clone https://github.com/cesco345/mAb-Stability-Predictor.git
     cd mAb-Stability-Predictor
     ```
 
@@ -71,6 +71,7 @@ TYR_15,0.90
 TYR_22,0.85
 TRP_10,0.88
 TRP_34,0.80
+```
 
 ## Contributing
 
